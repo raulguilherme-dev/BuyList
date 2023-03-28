@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index</title>
+</head>
+<body>
+    
+    Products ---------------------------
+    <ul>
+    {% for prod in prods %}
+        <li> {{prod.id}} {{prod.name}} - {{prod.description}} - {{prod.category}}
+            <a class="btn btn-outline-danger" href="{% url 'delete_product' pk=prod.id %}">Delete It</a>
+        </li>
+    {% endfor %}
+    </ul>
+
+    Adicionar:
+    <form action="/add_product/" method="post">
+        {% csrf_token %}
+        <label for="name"> Name:</label>
+        <input id="name" type="text" name="name" value="">
+        
+        <label for="description">Description: </label>
+        <input id="description" type="text" name="description" value="">
+
+        <select class="form-control mb-4" name="category">
+            <option selected disabled>Select Category</option>
+
+            {% for cat in categories %}
+            <option value="{{cat.id}}">{{cat.name}}</option>
+            {% endfor %}
+
+        </select>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    Editar:
+    <form action="/edit_product/" method="post">
+        {% csrf_token %}
+        
+        <label for="id"> Id:</label>
+        <input id="id" type="text" name="id" value="">
+
+        <label for="name"> Name:</label>
+        <input id="name" type="text" name="name" value="">
+        
+        <label for="description">Description: </label>
+        <input id="description" type="text" name="description" value="">
+
+        <select class="form-control mb-4" name="category">
+            <option selected disabled>Select Category</option>
+
+            {% for cat in categories %}
+            <option value="{{cat.id}}">{{cat.name}}</option>
+            {% endfor %}
+
+        </select>
+        <input type="submit" value="Submit">
+    </form>
+
+
+    Lists ---------------------------
+
+    <ul>
+        {% for list in lists %}
+            <li> {{list.id}} {{list.name}} 
+                <a class="btn btn-outline-danger" href="{% url 'delete_list' pk=list.id %}">Delete It</a>
+            </li>
+            <ol>
+            {% for pl in productsLists %}
+                {% if pl.list.id == list.id%}
+                    <li>{{pl.product}}</li>
+                    <a class="btn btn-outline-danger" href="{% url 'delete_product_from_list' li=pl.list.id pi=pl.product.id %}">Delete It</a>
+                {% endif %}
+            {% endfor %}
+            </ol>
+        {% endfor %}
+        </ul>
+        
+    Adicionar:
+    <form action="/add_list/" method="post">
+        {% csrf_token %}
+        <label for="name"> Name:</label>
+        <input id="name" type="text" name="name" value="">
+        <input type="submit" value="Submit">
+    </form>
+        
+    Editar:
+    <form action="/edit_list/" method="post">
+        {% csrf_token %}
+        
+        <label for="id"> Id:</label>
+        <input id="id" type="text" name="id" value="">
+    
+        <label for="name"> Name:</label>
+        <input id="name" type="text" name="name" value="">
+    
+        <input type="submit" value="Submit">
+    </form>
+
+    Adicionar produtos:
+    <form action="/add_product_to_list/" method="post">
+        {% csrf_token %}
+
+        <select class="form-control mb-4" name="list">
+            <option selected disabled>Select List</option>
+
+            {% for list in lists %}
+            <option value="{{list.id}}">{{list.name}}</option>
+            {% endfor %}
+
+        </select>
+
+        <select class="form-control mb-4" name="product">
+            <option selected disabled>Select Product</option>
+
+            {% for prod in prods %}
+            <option value="{{prod.id}}">{{prod.name}}</option>
+            {% endfor %}
+
+        </select>
+
+        <input type="submit" value="Submit">
+
+    </form>
+
+</body>
+</html>

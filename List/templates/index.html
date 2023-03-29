@@ -70,14 +70,15 @@
             <li> {{list.id}} {{list.name}} 
                 <a class="btn btn-outline-danger" href="{% url 'delete_list' pk=list.id %}">Delete It</a>
             </li>
-            <ol>
+            <ul>
             {% for pl in productsLists %}
                 {% if pl.list.id == list.id%}
-                    <li>{{pl.product}}</li>
-                    <a class="btn btn-outline-danger" href="{% url 'delete_product_from_list' li=pl.list.id pi=pl.product.id %}">Delete It</a>
+                    <li> {{pl.product.id}} {{pl.product.name}}
+                        <a class="btn btn-outline-danger" href="{% url 'delete_product_from_list' pi=pl.product.id li=pl.list.id %}">Delete It</a>
+                    </li>
                 {% endif %}
             {% endfor %}
-            </ol>
+            </ul>
         {% endfor %}
         </ul>
         

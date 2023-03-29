@@ -87,14 +87,10 @@ def add_product_to_list(request):
         data.save()
     return HttpResponseRedirect('/')
 
-def delete_product_from_list(li, pi):
-    # if request.method == 'POST':
-    # list_id = request.POST.get('list_id')
-    # product_id = request.POST.get('product_id')
-    print(li)
+def delete_product_from_list(request, li, pi):
     lis = List.objects.get(id = li)
     prod = Product.objects.get(id = pi)
-    productsList = ProductsList.objects.filter(product_id=prod, list_id=lis)
+    productsList = ProductsList.objects.filter(product_id=prod, list_id=lis).first()
 
     if productsList:
         productsList.delete()

@@ -17,6 +17,19 @@ def index(request):
     }
     return render(request, 'index.html', context)
 
+def home(request):
+    products = Product.objects.all
+    lists = List.objects.all
+    categories = Category.objects.all
+    productsList = ProductsList.objects.all
+    context = {
+        'prods': products,
+        'lists': lists,
+        'categories': categories,
+        'productsLists': productsList
+    }
+    return render(request, 'home.html', context)
+
 def add_product(request):
     # inserir no meu banco de dados
     if request.method == 'POST':

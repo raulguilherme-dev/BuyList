@@ -1,65 +1,72 @@
-{% load static %}
-
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <script src="{% static 'js/script.js' %}"></script>
-</head>
-<body>
-    <header>
-        <p>BuyList</p>
+{% extends 'base.html' %}
+{% block content %}
+<section id="sectionHome">
+    <div class="topSection">
         <p>Listas</p>
-        <p>Receitas</p>
-    </header>
 
-    <main>
-        <div id="overlay"></div>
-        <section>
-            <div class="topSection">
-                <p>Listas</p>
+        <input type="button" class="discreetButton" value="Listas Arquivadas">
+    </div>
 
-                <input type="button" class="discreetButton" value="Listas Arquivadas">
+    <div class="opSection">
+        <input type="button" value="Adicionar" id="addButton" onclick="openPopup('addListPopUp')">
+        <div class="PopUp" id="addListPopUp">
+            <h1>Criar Nova Lista</h1>
+            <form action="/add_list/" method="post">
+                {% csrf_token %}
+                <fieldset>
+                    <input type="text" name="name" id="name" placeholder="Nome da Lista">
+                </fieldset>
+                <fieldset>
+                    <input type="submit" value="Criar">
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+    <div id="listas">
+        {% for list in lists %}
+        <div class="lista">
+            <div id="listaFirstLine">
+                <p class="listName">{{list.name}}</p>
+                <p class="listPrice">R$XXX,XX</p>
             </div>
+            <div id="listaSecondLine" onmouseover="showButton('li{{list.id}}', 'ap{{list.id}}')" onmouseout="hideButton('li{{list.id}}', 'ap{{list.id}}', )">
+                <p class="listItens" id="li{{list.id}}">{% for pl in productsLists %}  {% if pl.list.id == list.id %} {{pl.product.name}} /  {% endif %} {% endfor %}</p>
+                <input type="button" value="Adicionar Produtos" class="addProductsToList" id="ap{{list.id}}" onclick="showProductsButton('ap{{list.id}}', '{{list.id}}', '{{list.name}}')">
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
 
-            <div class="opSection">
-                <input type="button" value="Adicionar" id="addButton" onclick="openPopup()">
-                <div id="adicionarListaPopUp">
-                    <p>Criar Nova Lista</p>
-                    <form action="/add_list/" method="post">
-                        {% csrf_token %}
-                        <fieldset>
-                            <input type="text" name="name" id="name" placeholder="Nome da Lista">
-                        </fieldset>
-                        <fieldset>
-                            <input type="submit" value="Criar">
-                        </fieldset>
-                    </form>
+<aside>
+    <div class="topAside">
+        <p>Produtos</p>
+    </div>
+
+    <div class="produtos">
+        {% for prod in prods %}
+            <div class="produto">
+                <p class="prodName">{{prod.name}}</p>
+                <p class="prodMP">Menor Preço</p>
+                <p class="prodPrice">R$X,XX</p>
+                <div class="row">
+                    <input type="number" name="quantity" class="quantity" id="id{{prod.id}}" min="1" value="1">
+                    <input type="submit" value="+" class="plus" onclick="storeSelectedProducts('{{prod.id}}', '{{prod.name}}')">
                 </div>
             </div>
-
-            <div id="listas">
-                {% for list in lists %}
-                <div class="lista">
-                    <div id="listaFirstLine">
-                        <p class="listName">{{list.name}}</p>
-                        <p class="listPrice">R$XXX,XX</p>
-                    </div>
-                    <div id="listaSecondLine">
-                        <p class="listItens">{% for pl in productsLists %}  {% if pl.list.id == list.id %} {{pl.product.name}} /  {% endif %} {% endfor %}</p>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </section>
-    
-        <aside>
-    
-        </aside>
-    </main>
-</body>
-</html>
+        {% endfor %}
+    </div>
+</aside>
+<div class="floatButton" id="floatAddProductsButton" onclick="openPopup('addProductToListPopUp')">
+    <p id="listName"></p>
+</div>
+<div class="PopUp" id="addProductToListPopUp">
+    <div id="toAdd">
+        
+    </div>
+    <div id="postButton">
+        <input type="submit" value="Adicionar" onclick="sendProducts()">
+    </div>
+</div>
+{% endblock %}

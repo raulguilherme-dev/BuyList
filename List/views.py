@@ -1,5 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
+from json import *
 
 from List.models import *
 
@@ -29,6 +31,19 @@ def home(request):
         'productsLists': productsList
     }
     return render(request, 'home.html', context)
+
+def lista(request):
+    products = Product.objects.all
+    lists = List.objects.all
+    categories = Category.objects.all
+    productsList = ProductsList.objects.all
+    context = {
+        'prods': products,
+        'lists': lists,
+        'categories': categories,
+        'productsLists': productsList
+    }
+    return render(request, 'lista.html', context)
 
 def add_product(request):
     # inserir no meu banco de dados
@@ -98,7 +113,28 @@ def add_product_to_list(request):
             list = lis
         )
         data.save()
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect('/home/')
+
+
+@csrf_exempt
+def add_multiple_products_to_list(request):
+    if request.method == 'POST':
+        data = loads(request.body)
+        print(data)
+        i = len(data['4'])
+        print(i)
+        for c in range(i):
+            lis = List.objects.get(id = '4')
+            prod = Product.objects.get(id = data['4'][c]['productId'])
+            print(data['4'][c]['quantity'])
+            # quant = ProductsList.objects.get(quantity = int(data['4'][c]['quantity']))
+            data = ProductsList(
+                product = prod,
+                list = lis,
+                # quantity = quant
+            )
+            data.save()
+    return HttpResponseRedirect('/home/')
 
 def delete_product_from_list(request, li, pi):
     lis = List.objects.get(id = li)

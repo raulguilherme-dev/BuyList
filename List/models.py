@@ -13,7 +13,7 @@ class Supermarket(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=50)
-    description = models.CharField(max_length=100)
+    description = models.CharField(max_length=100, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
@@ -37,8 +37,7 @@ class List(models.Model):
 class ProductsList(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     list = models.ForeignKey(List, on_delete=models.CASCADE)
-    # quantity = models.IntegerField(default=1)
-    # product_second_option = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
 
     def __str__(self):
         return self.list.name + " - " + self.product.name
